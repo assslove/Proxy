@@ -19,9 +19,9 @@
 #include <string.h>
 
 extern "C" {
-#include <sserv/log.h>
+#include <libnanc/log.h>
+#include <libnanc/conf.h>
 #include <sserv/net_util.h>
-#include <sserv/conf.h>
 #include <sserv/fds.h>
 
 #include <libnanc/proto_head.h>
