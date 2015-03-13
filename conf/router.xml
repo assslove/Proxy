@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--默认命令号为16位 0xffff
+	每0xFF为一段命令
+	0-7FFF供平台使用 公共使用 
+	80ff-ffff供自己使用 项目内 每个命令段会路由到不同的ip port上
+	remoteIp 为远程服务ip
+	remotePort 为远程服务port
+	routerId 为0x0-0xff 供选选择 
+	type 使用类型 0-单库单表 1-1库10表 2-1库100表 3-100库10表 4-100库100表
+	根据routeId与id来路由 id % 100来计算 默认为 idStart-idEnd 来判断到底路由到那个服务上
+	subIdStart-subIdEnd来判断在那个表上
+	系统启动后会自动连接相应的服务 
+ -->
+<Routers>
+	<Router routeId="80" type="4" desc="USER库路由">
+		<Database idStart="00" idEnd="24">
+			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="00" subIdEnd="49"/>
+			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="50" subIdEnd="99"/>
+		</Database>
+		<Database idStart="25" idEnd="99">
+			<Table remoteIp="127.0.0.1" remotePort="9001" subIdStart="00" subIdEnd="99"/>
+		</Database>
+	</Router> 
+	<Router routeId="81" type="0" desc="GLOBAL库路由">
+		<Database idStart="00" idEnd="99">
+			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="00" subIdEnd="99"/>
+		</Database>
+	</Router> 
+	<Router routeId="82" type="0" desc="GLOBAL库路由">
+		<Database idStart="00" idEnd="99">
+			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="00" subIdEnd="99"/>
+		</Database>
+	</Router> 
+
+</Routers>
