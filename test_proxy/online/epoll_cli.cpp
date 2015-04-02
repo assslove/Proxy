@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 
 	struct sockaddr_in servaddr;
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(9001 + rand() % 50);
+	servaddr.sin_port = htons(10001);
 	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
 	int ret = connect(fd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr));
@@ -183,7 +183,7 @@ recv_again:
 			goto recv_again;
 		}
 
-		sleep(1);
+		//sleep(1);
 		//getchar();
 		char input[200] = {'\0'};
 		int num = rand() % 200+ 1;
@@ -191,10 +191,10 @@ recv_again:
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 200; ++i) {
+		for (i = 0; i < 1; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
 			pkg->id =  i;
-			pkg->cmd = i + 1;
+			pkg->cmd = 0x8000;
 			pkg->ret = i + 2;
 			pkg->seq = ++seq;
 
@@ -209,7 +209,7 @@ recv_again:
 			send(fd, buf, pkg->len, 0);
 			printf("send: id=%u,cmd=%u,seq=%u,ret=%u,%s:%lu\n\n", pkg->id, pkg->cmd, pkg->seq, pkg->ret, input, strlen(input) + 1);
 
-			//			getchar();
+			getchar();
 		}
 		//		sleep(1);
 		//if (rand() % 2) {

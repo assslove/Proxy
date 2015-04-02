@@ -23,12 +23,12 @@
 	</Router> 
 	<Router routeId="81" type="0" desc="GLOBAL库路由">
 		<Database idStart="00" idEnd="99">
-			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="00" subIdEnd="99"/>
+			<Table remoteIp="127.0.0.1" remotePort="11000" subIdStart="00" subIdEnd="99"/>
 		</Database>
 	</Router> 
 	<Router routeId="82" type="0" desc="GLOBAL库路由">
 		<Database idStart="00" idEnd="99">
-			<Table remoteIp="127.0.0.1" remotePort="9000" subIdStart="00" subIdEnd="99"/>
+			<Table remoteIp="127.0.0.1" remotePort="11001" subIdStart="00" subIdEnd="99"/>
 		</Database>
 	</Router> 
 

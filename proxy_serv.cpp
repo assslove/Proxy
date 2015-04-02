@@ -109,4 +109,13 @@ OUTER_FUNC int	get_msg_len(int fd, const void *data, int len, int ismaster)
 	return *(int *)(data);
 }
 
+OUTER_FUNC int	reload_logic()
+{
+	return 0;
+}
+
+OUTER_FUNC int	proc_mcast_msg(struct mcast_pkg *pkg)
+{
+	return 0;
+}
 
