@@ -3,7 +3,7 @@ TARGET=proxy.so
 DATA_TARGET=data.so
 INC = 
 LIBS = `pkg-config --cflags --libs glib-2.0 libxml-2.0` -L/usr/local/lib -lxml2 -lnanc -lnanc++ -lpthread
-CXXFLAGS = -g -Wall -fPIC -shared -D_GNU_SOURCE -DSERV_ONE 
+CXXFLAGS = -g -Wall -fPIC -shared -D_GNU_SOURCE -DSERV_ONE  -std=gnu++11
 #SRCS = $(wildcard *.cpp)
 #OBJS = $(patsubst %.cpp, %.o, $(SRCS))
 OBJS = proxy_serv.o proxy.o router.o

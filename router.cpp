@@ -165,7 +165,7 @@ int RouterManager::loadRouterXml()
 				item.databases.push_back(db);
 				ch2	= parser.getNextNode(ch2, "Database");
 			}
-			routers.insert(std::make_pair<uint32_t, router_t>(cmd, item));
+			routers.insert(std::pair<uint32_t, router_t>(cmd, item));
 			ch1 = parser.getNextNode(ch1, "Router");
 		}
 	}

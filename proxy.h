@@ -2,7 +2,7 @@
 #define _PROXY_H_
 
 #include <libnanc++/singleton.h>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <stdint.h>
 
 #include "router.h"
@@ -20,7 +20,7 @@ class Proxy : public Singleton<Proxy> {
 
 	friend class Singleton<Proxy>;
 
-	typedef std::tr1::unordered_map<UserId, int> UserFdMap; //用户->客户端fd映射
+	typedef std::unordered_map<UserId, int> UserFdMap; //用户->客户端fd映射
 	typedef UserFdMap::iterator Iter;
 
 	private:

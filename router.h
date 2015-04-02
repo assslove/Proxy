@@ -1,7 +1,7 @@
 #ifndef _ROUTER_H
 #define _ROUTER_H
 
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <stdint.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -83,7 +83,7 @@ typedef struct {
 
 #pragma pack()
 
-typedef std::tr1::unordered_map<uint32_t, router_t> RouterMap; //路由id-路由信息
+typedef std::unordered_map<uint32_t, router_t> RouterMap; //路由id-路由信息
 typedef RouterMap::iterator RouterIter;
 
 

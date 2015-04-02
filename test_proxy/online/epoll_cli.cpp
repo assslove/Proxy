@@ -193,7 +193,7 @@ recv_again:
 		char buf[1024];
 		for (i = 0; i < 1; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
-			pkg->id =  i;
+			pkg->id =  rand() % 10000;
 			pkg->cmd = 0x8000;
 			pkg->ret = i + 2;
 			pkg->seq = ++seq;
@@ -209,7 +209,7 @@ recv_again:
 			send(fd, buf, pkg->len, 0);
 			printf("send: id=%u,cmd=%u,seq=%u,ret=%u,%s:%lu\n\n", pkg->id, pkg->cmd, pkg->seq, pkg->ret, input, strlen(input) + 1);
 
-			getchar();
+//			getchar();
 		}
 		//		sleep(1);
 		//if (rand() % 2) {
