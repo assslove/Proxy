@@ -158,7 +158,7 @@ recv_again:
 						char*  ptr = recvbuf;
 						proto_pkg_t *msg = (proto_pkg_t *)(ptr + readlen);
 						start = seq_time_map[msg->seq];
-						printf("recv: %d,%d,%d,%d,%d,%s:%lu,%lu\n", 
+						printf("recv: %d,%d,%d,%d,%d,%s:%lu,[%lu]\n", 
 								msg->id, 
 								msg->cmd, 
 								msg->seq,
@@ -191,9 +191,9 @@ recv_again:
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 1; ++i) {
+		for (i = 0; i < 100; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
-			pkg->id =  rand() % 10000;
+			pkg->id =  rand() % 100000000;
 			pkg->cmd = 0x8000;
 			pkg->ret = i + 2;
 			pkg->seq = ++seq;
