@@ -184,14 +184,14 @@ recv_again:
 		}
 
 		//getchar();
-//		sleep(1);
+		sleep(1);
 		char input[200] = {'\0'};
 		int num = rand() % 200+ 1;
 		//int num = 30;
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 10; ++i) {
+		for (i = 0; i < 100; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
 			pkg->id =  rand() % 100000000;
 			pkg->cmd = 0x8000;
