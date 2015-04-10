@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 
 	struct sockaddr_in servaddr;
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(10001);
+	servaddr.sin_port = htons(rand()%4 + 10001);
 	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
 	int ret = connect(fd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr));
@@ -183,15 +183,15 @@ recv_again:
 			goto recv_again;
 		}
 
-		//sleep(1);
 		//getchar();
+//		sleep(1);
 		char input[200] = {'\0'};
 		int num = rand() % 200+ 1;
 		//int num = 30;
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 1; ++i) {
+		for (i = 0; i < 10; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
 			pkg->id =  rand() % 100000000;
 			pkg->cmd = 0x8000;
