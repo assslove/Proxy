@@ -95,6 +95,7 @@ int seq = 0;
 
 int main(int argc, char* argv[]) 
 {
+	seq = getpid() * 100000;
 	srand(time(NULL));
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1) {
@@ -104,6 +105,7 @@ int main(int argc, char* argv[])
 	struct sockaddr_in servaddr;
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(rand()%4 + 10001);
+	//servaddr.sin_port = htons(11000);
 	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
 	int ret = connect(fd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr));
@@ -151,13 +153,24 @@ recv_again:
 				} else if (ret > 0) {
 					printf("recvbuf len=%d\n", ret);
 					int len = ret;
+					if (len == 102400) {
+						return 0;
+					}
 					int readlen = 0;
 					struct timeval end;
 					struct timeval start; 
 					while (readlen < len) {
+						if (readlen + 4 > len) {
+							printf("no full pack");
+							return 0;	
+						}
 						gettimeofday(&end, NULL);
 						char*  ptr = recvbuf;
 						proto_pkg_t *msg = (proto_pkg_t *)(ptr + readlen);
+						if (readlen + msg->len > len) {
+							printf("no full pack");
+							return 0;
+						}
 						start = seq_time_map[msg->seq];
 						printf("recv: %d,%d,%d,%d,%d,%s:%lu,[%lu]\n", 
 								msg->id, 
@@ -196,8 +209,9 @@ recv_again:
 			struct tm curTm;
 			localtime_r(&tmp_timeval.tv_sec, &curTm);
 			for (auto &i : ids) {
-				int len = sprintf(buf, "no return pack [%02d:%02d:%02d][id=%d]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
-				seq_time_map.erase(i);
+				int len = sprintf(buf, "no return pack [%02d:%02d:%02d][seq=%u]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
+//				seq_time_map.erase(i);
+				sleep(1); //发送太快 处理
 				write(fd, buf, len);
 			}
 			close(fd);
@@ -207,12 +221,12 @@ recv_again:
 		//getchar();
 		sleep(1);
 		char input[200] = {'\0'};
-		int num = rand() % 200+ 1;
+		int num = rand() % 100+ 1;
 		//int num = 30;
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 10; ++i) {
+		for (i = 0; i < 200; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
 			pkg->id =  rand() % 100000000 + 100000000;
 			pkg->cmd = 0x8000;
