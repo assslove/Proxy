@@ -32,11 +32,12 @@
 #include <time.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <map>
-#include <unordered_map>
-#include <iostream>
 
-std::map<uint32_t, timeval> seq_time_map;
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+std::unordered_map<uint32_t, timeval> seq_time_map;
 
 typedef struct proto_pkg {
 	int len;
@@ -131,7 +132,7 @@ int main(int argc, char* argv[])
 	while (!done) {
 		int i;
 recv_again:
-		int n = epoll_wait(epfd, evs, 1024, 100);
+		int n = epoll_wait(epfd, evs, 1024, 1000);
 		if (n == -1 && errno != EINTR) {
 			printf("%s", strerror(errno));
 			return 0;
@@ -170,6 +171,7 @@ recv_again:
 							  );
 						readlen += msg->len;
 						seq_time_map.erase(msg->seq);
+						//check seq_time_timeout
 					}
 				} else {
 					printf("recv error");
@@ -180,6 +182,25 @@ recv_again:
 			}
 		}
 		if (seq_time_map.size()) {
+			timeval tmp_timeval;
+			gettimeofday(&tmp_timeval, NULL);
+			std::vector<uint32_t> ids;
+			for (auto &i : seq_time_map) {
+				if (tmp_timeval.tv_sec - i.second.tv_sec >= 5) {
+					ids.push_back(i.first);	
+				}
+			}
+
+			int fd = open("error.log", O_RDWR | O_APPEND, 0666);
+			static char buf[128];
+			struct tm curTm;
+			localtime_r(&tmp_timeval.tv_sec, &curTm);
+			for (auto &i : ids) {
+				int len = sprintf(buf, "no return pack [%02d:%02d:%02d][id=%d]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
+				seq_time_map.erase(i);
+				write(fd, buf, len);
+			}
+			close(fd);
 			goto recv_again;
 		}
 
@@ -191,9 +212,9 @@ recv_again:
 		gen_str(input, num);
 		//		scanf("%s", input);
 		char buf[1024];
-		for (i = 0; i < 100; ++i) {
+		for (i = 0; i < 10; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
-			pkg->id =  rand() % 100000000;
+			pkg->id =  rand() % 100000000 + 100000000;
 			pkg->cmd = 0x8000;
 			pkg->ret = i + 2;
 			pkg->seq = ++seq;
