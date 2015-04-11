@@ -95,7 +95,7 @@ int seq = 0;
 
 int main(int argc, char* argv[]) 
 {
-	seq = getpid() * 100000;
+	seq = getpid() % 100 * 10000000;
 	srand(time(NULL));
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1) {
@@ -211,9 +211,10 @@ recv_again:
 			for (auto &i : ids) {
 				int len = sprintf(buf, "no return pack [%02d:%02d:%02d][seq=%u]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
 //				seq_time_map.erase(i);
-				sleep(1); //发送太快 处理
 				write(fd, buf, len);
 			}
+
+//			sleep(1); //发送太快 处理
 			close(fd);
 			goto recv_again;
 		}
@@ -244,7 +245,7 @@ recv_again:
 			send(fd, buf, pkg->len, 0);
 			printf("send: id=%u,cmd=%u,seq=%u,ret=%u,%s:%lu\n\n", pkg->id, pkg->cmd, pkg->seq, pkg->ret, input, strlen(input) + 1);
 
-//			getchar();
+			//			getchar();
 		}
 		//		sleep(1);
 		//if (rand() % 2) {
