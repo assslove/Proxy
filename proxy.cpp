@@ -58,8 +58,8 @@ void Proxy::handleResponse(const proto_pkg_t *pkg)
 		return ;
 	}
 
-	send_to_cli(get_fd(m_tempfd), pkg, pkg->len);
 	g_proxy.del(temp_user_id);
+	send_to_cli(get_fd(m_tempfd), pkg, pkg->len);
 }
 
 void Proxy::handleCliClosed(int fd)
