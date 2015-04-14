@@ -96,8 +96,7 @@ int id = 0;
 
 int main(int argc, char* argv[]) 
 {
-	seq = getpid() % 100 * 10000000;
-	id = getpid() % 100 * 10000000;
+	seq = getpid() % 1000 * 1000000;
 	srand(time(NULL));
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1) {
@@ -107,7 +106,7 @@ int main(int argc, char* argv[])
 	struct sockaddr_in servaddr;
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(rand()%4 + 10001);
-	//servaddr.sin_port = htons(11000);
+	//servaddr.sin_port = htons(10004);
 	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
 	int ret = connect(fd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr));
@@ -197,27 +196,27 @@ recv_again:
 			}
 		}
 		if (seq_time_map.size()) {
-			//timeval tmp_timeval;
-			//gettimeofday(&tmp_timeval, NULL);
-			//std::vector<uint32_t> ids;
-			//for (auto &i : seq_time_map) {
-				//if (tmp_timeval.tv_sec - i.second.tv_sec >= 5) {
-					//ids.push_back(i.first);	
-				//}
-			//}
+			timeval tmp_timeval;
+			gettimeofday(&tmp_timeval, NULL);
+			std::vector<uint32_t> ids;
+			for (auto &i : seq_time_map) {
+				if (tmp_timeval.tv_sec - i.second.tv_sec >= 60) {
+					ids.push_back(i.first);	
+				}
+			}
 
-			//int fd = open("error.log", O_RDWR | O_APPEND, 0666);
-			//static char buf[128];
-			//struct tm curTm;
-			//localtime_r(&tmp_timeval.tv_sec, &curTm);
-			//for (auto &i : ids) {
-				//int len = sprintf(buf, "no return pack [%02d:%02d:%02d][seq=%u]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
-////				seq_time_map.erase(i);
-				//write(fd, buf, len);
-			//}
+			int fd = open("error.log", O_RDWR | O_APPEND, 0666);
+			static char buf[128];
+			struct tm curTm;
+			localtime_r(&tmp_timeval.tv_sec, &curTm);
+			for (auto &i : ids) {
+				int len = sprintf(buf, "no return pack [%02d:%02d:%02d][seq=%u]\n", curTm.tm_hour, curTm.tm_min,  curTm.tm_sec, i);
+				//				seq_time_map.erase(i);
+				write(fd, buf, len);
+			}
 
-////			sleep(1); //发送太快 处理
-			//close(fd);
+			//			sleep(1); //发送太快 处理
+			close(fd);
 			goto recv_again;
 		}
 
@@ -231,7 +230,9 @@ recv_again:
 		char buf[1024];
 		for (i = 0; i < 100; ++i) {
 			proto_pkg_t *pkg = (proto_pkg_t *)buf;	
-			pkg->id =  id++;
+			pkg->id =  id++ ;
+			if (pkg->id >= 1000000) pkg->id = 1;
+			pkg->id += getpid() % 1000  * 1000000;
 			pkg->cmd = 0x8000;
 			pkg->ret = i + 2;
 			pkg->seq = ++seq;
